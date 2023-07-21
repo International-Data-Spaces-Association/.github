@@ -7,7 +7,7 @@ As shown in the infographic below, IDS enables trusted data exchange between dat
 
 Discover the full potential of data spaces by exploring our assets today!
 Visit [our website](https://internationaldataspaces.org/) to delve deeper into our mission and latest updates. Don't forget to follow us [on social media](https://www.linkedin.com/company/international-data-spaces-association/) to stay informed about our activities and engage with our community. You want to dig deeper? Dive into [our blog](https://internationaldataspaces.org/category/blog/) section, where we share in-depth articles, insights, and stories related to sovereign data sharing. It's a great place to learn more about our work and the impact we're making.
-And last but not least: Subscribe to [our newsletter] (https://internationaldataspaces.org/newsletter/) to receive regular updates, news, and special event announcements straight to your inbox. Don't miss any important milestones or opportunities to get involved!
+And last but not least: Subscribe to [our newsletter](https://internationaldataspaces.org/newsletter/) to receive regular updates, news, and special event announcements straight to your inbox. Don't miss any important milestones or opportunities to get involved!
 Below are a few ways how you can start your journey into data spaces here on GitHub:
 
 ---
