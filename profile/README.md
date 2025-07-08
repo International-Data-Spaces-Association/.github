@@ -4,9 +4,9 @@ The **International Data Spaces Association (IDSA)** unites [over 180 members](h
 
 To further support this mission and connect practitioners directly, the [Data Spaces User Group](https://internationaldataspaces.org/data-space-user-group/) brings together users and adopters of data spaces to share experiences, discuss best practices and advance practical implementations. It is an open and collaborative forum to accelerate adoption and drive community learning.
 
-If you are not yet part of the IDSA GitHub community and would like to **join**, please use the button below to get started ⬇️ 
+If you are not yet part of the IDSA GitHub community and would like to **join**, please use the link below to get started ⬇️ 
 
-[![Join IDSA GitHub](https://github.com/International-Data-Spaces-Association/idsa/raw/main/images/button_click-to-join-ids-githubv2.png.png)](https://forms.office.com/pages/responsepage.aspx?id=NNZGs_usx0K9RPFVfuibGz1qA21VHyZEj6dyjHL7iBdUM0ZVMzlEMkJTUlhOSEVEWEQyMjZPOUNYTi4u&route=shorturl)
+[👉 **Click to Join**](https://forms.office.com/pages/responsepage.aspx?id=NNZGs_usx0K9RPFVfuibGz1qA21VHyZEj6dyjHL7iBdUM0ZVMzlEMkJTUlhOSEVEWEQyMjZPOUNYTi4u&route=shorturl)
 
 You can explore, contribute, and engage freely. In addition, IDSA members enjoy access to dedicated members-only areas for deeper collaboration and exclusive resources. Contributions are limited to members; non-members can engage by filing issues and participating in discussions.
 
