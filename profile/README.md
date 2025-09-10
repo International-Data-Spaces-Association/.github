@@ -23,6 +23,7 @@ Here, you'll find collaborative work on standards, architecture elements, and co
 Key repositories and resources include (alongside many other repositories you can explore):
 - [**IDSA Main Repository**](https://github.com/International-Data-Spaces-Association/idsa) 🏠 — General information, community discussions, and overall communication for the association.
 - [**IDS RAM 5**](https://github.com/International-Data-Spaces-Association/RAM5) 📘 *(members-only)* — Working repository to create the IDS-RAM 5.
+- Previous version of IDS RAM **(v4)** can be accessed via [here](https://github.com/International-Data-Spaces-Association/IDS-RAM_4_0).
 - [**IDSA Rulebook**](https://github.com/International-Data-Spaces-Association/IDSA-Rulebook) 📗 — The working repository of the IDSA Rulebook Working Group.
 - [**Members Area**](https://github.com/International-Data-Spaces-Association/members-area) 🔒 *(members-only)* — Contains information for IDSA members on the Working Groups.
 - [**DSBOK (Data Space Body of Knowledge)**](https://github.com/International-Data-Spaces-Association/DSBOK) 📒 *(members-only)* — Repository of the Data Space Body of Knowledge, as part of the WG Training.
