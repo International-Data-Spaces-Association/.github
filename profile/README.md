@@ -1,6 +1,6 @@
 # Welcome to the IDSA GitHub
 
-The **International Data Spaces Association (IDSA)** unites [over 180 members](https://internationaldataspaces.org/we/members/) committed to a future where individuals and organizations retain full control over their data. Together, we shape the global standard for trusted, sovereign, and interoperable data spaces.
+The **International Data Spaces Association (IDSA)** unites [around 200 members](https://internationaldataspaces.org/we/members/) committed to a future where individuals and organizations retain full control over their data. Together, we shape the global standard for trusted, sovereign, and interoperable data spaces.
 
 To further support this mission and connect practitioners directly, the [Data Spaces User Group](https://internationaldataspaces.org/data-space-user-group/) brings together users and adopters of data spaces to share experiences, discuss best practices and advance practical implementations. It is an open and collaborative forum to accelerate adoption and drive community learning.
 
