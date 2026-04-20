@@ -1,0 +1,9 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "dictionaries": ["idsa"],
+  "dictionaryDefinitions": [
+    { "name": "idsa", "path": "./words.txt", "addWords": true }
+  ],
+  "useGitignore": true
+}

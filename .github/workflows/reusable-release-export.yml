@@ -1,0 +1,47 @@
+name: Reusable Release Export
+
+on:
+  workflow_call:
+    inputs:
+      content_dir:
+        required: true
+        type: string
+      summary_path:
+        required: true
+        type: string
+      output_basename:
+        required: false
+        type: string
+        default: documentation
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: International-Data-Spaces-Association/.github
+          path: _shared
+      - name: Install Pandoc + TeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-latex-extra
+      - name: Assemble
+        run: |
+          python3 _shared/scripts/assemble_from_summary.py --summary "${{ inputs.summary_path }}" --out combined.md --fail-on-missing
+      - name: Build
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          BASENAME="${{ inputs.output_basename }}"
+          pandoc combined.md --from gfm --resource-path=.:"${{ inputs.content_dir }}" --reference-doc=_shared/assets/reference.docx -o "${BASENAME}-${TAG}.docx"
+          pandoc combined.md --from gfm --resource-path=.:"${{ inputs.content_dir }}" --pdf-engine=xelatex -o "${BASENAME}-${TAG}.pdf"
+      - name: Upload
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ inputs.output_basename }}-${{ github.event.release.tag_name }}.pdf
+            ${{ inputs.output_basename }}-${{ github.event.release.tag_name }}.docx

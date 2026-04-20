@@ -1,0 +1,69 @@
+name: Reusable PR Quality
+
+on:
+  workflow_call:
+    inputs:
+      content_dir:
+        required: true
+        type: string
+      run_linkcheck:
+        required: false
+        type: boolean
+        default: true
+      run_spellcheck:
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  markdown_lint:
+    name: markdown_lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: International-Data-Spaces-Association/.github
+          path: _shared
+      - uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            ${{ inputs.content_dir }}/**/*.md
+          config: _shared/assets/markdownlint/.markdownlint.jsonc
+
+  link_check:
+    name: link_check
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    if: ${{ inputs.run_linkcheck }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: International-Data-Spaces-Association/.github
+          path: _shared
+      - uses: lycheeverse/lychee-action@v1
+        with:
+          args: >-
+            --config _shared/assets/lychee/lychee.toml
+            ${{ inputs.content_dir }}/**/*.md
+
+  spell_check:
+    name: spell_check
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    if: ${{ inputs.run_spellcheck }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: International-Data-Spaces-Association/.github
+          path: _shared
+      - uses: streetsidesoftware/cspell-action@v6
+        with:
+          config: _shared/assets/cspell/cspell.json
+          files: |
+            ${{ inputs.content_dir }}/**/*.md
