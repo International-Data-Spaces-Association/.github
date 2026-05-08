@@ -1,0 +1,12 @@
+# Use Ubuntu stack so we can install fonts via apt
+FROM pandoc/latex:3.9-ubuntu
+
+# Install Noto fonts + Fira Code + fontconfig for discovery by fontspec
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fonts-noto \
+    fonts-firacode \
+    fontconfig \
+  && rm -rf /var/lib/apt/lists/*
+
+# Rebuild font cache (helps make font discovery deterministic)
+RUN fc-cache -f -v || true
