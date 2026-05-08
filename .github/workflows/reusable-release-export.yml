@@ -1,47 +1,65 @@
-name: Reusable Release Export
+name: Release (Export + Cover)
 
 on:
-  workflow_call:
-    inputs:
-      content_dir:
-        required: true
-        type: string
-      summary_path:
-        required: true
-        type: string
-      output_basename:
-        required: false
-        type: string
-        default: documentation
+  release:
+    types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   export:
+    uses: International-Data-Spaces-Association/.github/.github/workflows/reusable-release-export.yml@main
+    with:
+      summary_path: summary.md
+      output_basename: knowledge-base
+      papersize: a4
+      margin: 2.5cm
+      fontsize: 11pt
+      mainfont: Noto Sans
+      sansfont: Noto Sans
+      monofont: Fira Code
+      # optionally override:
+      # pandoc_image: ghcr.io/<ORG>/pandoc-latex-fonts:3.9
+
+  add-cover-and-publish:
+    needs: export
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - name: Checkout repository (to access assets/cover.pdf)
+        uses: actions/checkout@v4
+
+      - name: Download export artifacts
+        uses: actions/download-artifact@v4
         with:
-          repository: International-Data-Spaces-Association/.github
-          path: _shared
-      - name: Install Pandoc + TeX
+          name: release-export
+          path: exports
+
+      - name: Merge cover + body PDF (create additional artefact)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-latex-extra
-      - name: Assemble
-        run: |
-          python3 _shared/scripts/assemble_from_summary.py --summary "${{ inputs.summary_path }}" --out combined.md --fail-on-missing
-      - name: Build
-        run: |
-          TAG="${{ github.event.release.tag_name }}"
-          BASENAME="${{ inputs.output_basename }}"
-          pandoc combined.md --from gfm --resource-path=.:"${{ inputs.content_dir }}" --reference-doc=_shared/assets/reference.docx -o "${BASENAME}-${TAG}.docx"
-          pandoc combined.md --from gfm --resource-path=.:"${{ inputs.content_dir }}" --pdf-engine=xelatex -o "${BASENAME}-${TAG}.pdf"
-      - name: Upload
+          python -m pip install --upgrade pip
+          python -m pip install pypdf
+          python - <<'PY'
+          from pypdf import PdfWriter
+
+          cover = "assets/cover.pdf"
+          body  = "exports/knowledge-base.pdf"
+          out   = "exports/knowledge-base-with-cover.pdf"
+
+          writer = PdfWriter()
+          writer.append(cover)  # cover can be 1 or multiple pages
+          writer.append(body)
+          writer.write(out)
+          print(f"Created {out}")
+          PY
+        # pypdf supports merging by appending PDFs via PdfWriter.append() and writing the output. [2](https://bing.com/search?q=material+for+mkdocs+custom+404+page+setup)[3](https://squidfunk.github.io/mkdocs-material/customization/)
+
+      - name: Upload release assets (keep ALL artefacts)
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ inputs.output_basename }}-${{ github.event.release.tag_name }}.pdf
-            ${{ inputs.output_basename }}-${{ github.event.release.tag_name }}.docx
+            exports/knowledge-base.pdf
+            exports/knowledge-base-with-cover.pdf
+            exports/knowledge-base.docx
