@@ -1,12 +1,9 @@
 name: Build & publish pandoc-latex-fonts image
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main ]
-    paths:
-      - Dockerfile.pandoc-fonts
-      - .github/workflows/build-pandoc-fonts-image.yml
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -30,25 +27,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels)
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          # NOTE: org-level image name (not tied to this repo name)
-          images: ghcr.io/<ORG>/pandoc-latex-fonts
-          tags: |
-            type=raw,value=3.9
-            type=raw,value=3.9-ubuntu
-            type=sha,prefix=sha-
-            type=raw,value=latest
-
-      - name: Build and push
+      - name: Build and push image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: Dockerfile.pandoc-fonts
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          tags: |
+            ghcr.io/<ORG>/pandoc-latex-fonts:latest
+            ghcr.io/<ORG>/pandoc-latex-fonts:3.9
