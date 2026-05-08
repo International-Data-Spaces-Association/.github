@@ -36,3 +36,4 @@ jobs:
           tags: |
             ghcr.io/International-Data-Spaces-Association/pandoc-latex-fonts:latest
             ghcr.io/International-Data-Spaces-Association/pandoc-latex-fonts:3.9
+
