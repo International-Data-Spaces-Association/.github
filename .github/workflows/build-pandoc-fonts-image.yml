@@ -34,6 +34,5 @@ jobs:
           file: Dockerfile.pandoc-fonts
           push: true
           tags: |
-            ghcr.io/International-Data-Spaces-Association/pandoc-latex-fonts:latest
-            ghcr.io/International-Data-Spaces-Association/pandoc-latex-fonts:3.9
-
+            ghcr.io/international-data-spaces-association/pandoc-latex-fonts:latest
+            ghcr.io/international-data-spaces-association/pandoc-latex-fonts:3.9
