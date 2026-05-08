@@ -1,47 +1,119 @@
-name: Reusable Release Export
+name: Reusable Release Export (Pandoc in Docker)
 
 on:
   workflow_call:
     inputs:
-      content_dir:
-        required: true
-        type: string
       summary_path:
+        description: "Path to summary.md in the caller repository"
         required: true
         type: string
+
+      content_dir:
+        description: "Working directory of the caller repository content"
+        required: false
+        type: string
+        default: .
+
       output_basename:
+        description: "Base name for produced artifacts (without extension)"
         required: false
         type: string
         default: documentation
 
+      # Prebuilt image containing pandoc + xelatex + fonts
+      pandoc_image:
+        required: false
+        type: string
+        default: ghcr.io/international-data-spaces-association/pandoc-latex-fonts:3.9
+
+      # Knowledge Base PDF defaults
+      papersize:
+        required: false
+        type: string
+        default: a4
+      margin:
+        required: false
+        type: string
+        default: 2.5cm
+      fontsize:
+        required: false
+        type: string
+        default: 11pt
+      mainfont:
+        required: false
+        type: string
+        default: Noto Sans
+      sansfont:
+        required: false
+        type: string
+        default: Noto Sans
+      monofont:
+        required: false
+        type: string
+        default: Fira Code
+
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   export:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
+      - name: Checkout caller repository
+        uses: actions/checkout@v4
+
+      - name: Checkout shared repository (.github) for assemble script
+        uses: actions/checkout@v4
         with:
           repository: International-Data-Spaces-Association/.github
           path: _shared
-      - name: Install Pandoc + TeX
+
+      - name: Assemble markdown from summary (shared script)
+        working-directory: ${{ inputs.content_dir }}
         run: |
-          sudo apt-get update
-          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-latex-extra
-      - name: Assemble
-        run: |
-          python3 _shared/scripts/assemble_from_summary.py --summary "${{ inputs.summary_path }}" --out combined.md --fail-on-missing
-      - name: Build
-        run: |
-          TAG="${{ github.event.release.tag_name }}"
-          BASENAME="${{ inputs.output_basename }}"
-          pandoc combined.md --from gfm --resource-path=.:"${{ inputs.content_dir }}" --reference-doc=_shared/assets/reference.docx -o "${BASENAME}-${TAG}.docx"
-          pandoc combined.md --from gfm --resource-path=.:"${{ inputs.content_dir }}" --pdf-engine=xelatex -o "${BASENAME}-${TAG}.pdf"
-      - name: Upload
-        uses: softprops/action-gh-release@v2
+          python3 ../_shared/scripts/assemble_from_summary.py \
+            --summary "${{ inputs.summary_path }}" \
+            --out "../combined.md" \
+            --fail-on-missing
+
+      - name: Prepare output directory
+        run: mkdir -p exports
+
+      - name: Build DOCX (Pandoc in Docker)
+        uses: docker://${{ inputs.pandoc_image }}
         with:
-          files: |
-            ${{ inputs.output_basename }}-${{ github.event.release.tag_name }}.pdf
-            ${{ inputs.output_basename }}-${{ github.event.release.tag_name }}.docx
+          args: >-
+            combined.md
+            --from=gfm
+            --standalone
+            --resource-path=.:exports:exports/media:docs:docs/external:docs/assets
+            --output=exports/${{ inputs.output_basename }}.docx
+
+      - name: Build PDF (Pandoc + XeLaTeX, KB defaults)
+        uses: docker://${{ inputs.pandoc_image }}
+        with:
+          args: >-
+            combined.md
+            --from=gfm
+            --standalone
+            --toc
+            --number-sections
+            --pdf-engine=xelatex
+            -V papersize=${{ inputs.papersize }}
+            -V geometry:margin=${{ inputs.margin }}
+            -V fontsize=${{ inputs.fontsize }}
+            -V mainfont=${{ inputs.mainfont }}
+            -V sansfont=${{ inputs.sansfont }}
+            -V monofont=${{ inputs.monofont }}
+            --resource-path=.:exports:exports/media:docs:docs/external:docs/assets
+            --output=exports/${{ inputs.output_basename }}.pdf
+
+      - name: Upload export artifacts (PDF + DOCX)
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-export
+          path: |
+            exports/${{ inputs.output_basename }}.pdf
+            exports/${{ inputs.output_basename }}.docx
+          if-no-files-found: error
